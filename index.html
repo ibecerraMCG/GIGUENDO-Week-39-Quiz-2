@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 39 Practice Quiz 2</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }[data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }[data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }[data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }[data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }[data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }
+
+        [data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+            #reveal-all-container { justify-content: flex-start !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 39 Practice Quiz 2</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData =[
+            // --- Section 1: Pathology of the Liver ---
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO1: Recognize laboratory and histologic signs of hepatic injury.",
+                question: "A 55-year-old man with chronic liver disease is being evaluated for signs of worsening hepatic function. His physician orders a panel of laboratory tests to evaluate the synthetic capacity of his liver. Which of the following tests is a direct measure of hepatocyte synthetic function?",
+                options: {
+                    A: "Aspartate aminotransferase (AST)",
+                    B: "Prothrombin time (PT)",
+                    C: "Serum alkaline phosphatase",
+                    D: "Serum ammonia",
+                    E: "Serum lactate dehydrogenase (LDH)"
+                },
+                correctAnswer: "B",
+                rationale: "The synthetic function of hepatocytes is evaluated by measuring proteins secreted into the blood, specifically serum albumin and coagulation factors. Coagulation factors are assessed using Prothrombin time (PT) and partial thromboplastin (PTT) times. AST, ALT, and LDH measure hepatocyte integrity (injury), while alkaline phosphatase evaluates biliary excretory function.",
+                source: "Pathology of the Liver PDF, Slide 9: 'Hepatocyte synthetic function... Coagulation factors: Prothrombin (PT) and partial thromboplastin (PTT) times'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO1: Recognize laboratory and histologic signs of hepatic injury.",
+                question: "A 45-year-old woman undergoes a liver biopsy for persistently elevated liver enzymes. Microscopic examination of the tissue reveals scattered hepatocytes that are significantly enlarged with empty, pale cytoplasm. Which of the following terms best describes this specific histologic finding?",
+                options: {
+                    A: "Ballooning degeneration",
+                    B: "Cholestasis",
+                    C: "Councilman body formation",
+                    D: "Macrovesicular steatosis",
+                    E: "Microvesicular steatosis"
+                },
+                correctAnswer: "A",
+                rationale: "Ballooning degeneration is a histologic sign of hepatocyte injury characterized by enlarged cells with empty, pale cytoplasm.",
+                source: "Pathology of the Liver PDF, Slide 10: 'Hepatocyte Injury • Ballooning degeneration • Enlarged cells with empty pale cytoplasm'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO2: Discuss the clinical presentation of acute versus chronic liver failure.",
+                question: "A 30-year-old woman is brought to the emergency department after an intentional overdose of an unknown medication. She has no prior medical history. Within 4 days, she develops severe jaundice, hepatic encephalopathy, and a coagulopathy with an INR of 2.1. A liver biopsy would most likely show which of the following histologic patterns?",
+                options: {
+                    A: "Advanced bridging fibrosis",
+                    B: "Cellular necrosis and apoptosis",
+                    C: "Dense fibrous bands encircling nodules",
+                    D: "Regenerative nodules of hepatocytes",
+                    E: "Widespread portal-portal septal fibrosis"
+                },
+                correctAnswer: "B",
+                rationale: "This patient is presenting with acute (fulminant) liver failure (rapid development within days to weeks, encephalopathy, coagulopathy, no preceding cirrhosis). The histologic hallmark of acute liver failure is massive cellular necrosis and apoptosis, not the fibrotic/cirrhotic changes seen in chronic failure.",
+                source: "Pathology of the Liver PDF, Slide 17: 'Acute: develops rapidly days or weeks (fulminant)... No preceding cirrhosis • Histology • Cellular necrosis / apoptosis'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO2: Discuss the clinical presentation of acute versus chronic liver failure.",
+                question: "A 62-year-old man with a 20-year history of heavy alcohol use presents to the clinic with new-onset confusion and a flapping tremor of his hands (asterixis). Physical examination reveals spider angiomata, palmar erythema, and gynecomastia. The insidious onset of his hepatic encephalopathy over months to years is most closely associated with which of the following underlying histologic features?",
+                options: {
+                    A: "Advanced fibrosis and cirrhosis",
+                    B: "Diffuse acute lobular inflammation",
+                    C: "Florid duct lesions",
+                    D: "Microvesicular steatosis",
+                    E: "Widespread hepatocyte cytolysis (\"ghost cells\")"
+                },
+                correctAnswer: "A",
+                rationale: "Chronic liver failure develops insidiously over months to years and frequently occurs in the setting of cirrhosis. Patients exhibit features of acute failure plus additional stigmata of cirrhosis (spider angiomata, gynecomastia). The defining histology is advanced fibrosis/cirrhosis.",
+                source: "Pathology of the Liver PDF, Slide 17: 'Chronic: Insidiously months to years • Clinical • Frequently occurs in the setting of cirrhosis... Histology • Advanced fibrosis / cirrhosis'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Viral Hepatitis).",
+                question: "A 40-year-old man with a known history of Hepatitis C virus (HCV) infection undergoes a liver biopsy to stage his disease. Which of the following histologic findings is most characteristic of the chronic phase of this infection?",
+                options: {
+                    A: "Dense mononuclear portal infiltrates spilling into the parenchyma",
+                    B: "Ground-glass hepatocytes",
+                    C: "Massive centrilobular coagulative necrosis",
+                    D: "Onion-skinning fibrosis around bile ducts",
+                    E: "Prominent plasma cell infiltrates"
+                },
+                correctAnswer: "A",
+                rationale: "Chronic viral hepatitis is histologically characterized by dense mononuclear portal infiltrates (lymphocytes) and interface hepatitis, where inflammation spills over into the liver parenchyma.",
+                source: "Pathology of the Liver PDF, Slide 24: 'Viral Hepatitis Chronic Phase... Dense mononuclear portal infiltrates (lymphocytes) • Defining lesion of chronic hepatitis • Interface hepatitis • Inflammation spills over into the liver parenchyma'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Toxic Injury - Acetaminophen).",
+                question: "A 22-year-old man is brought to the emergency department after ingesting an entire bottle of acetaminophen. Over the next 48 hours, his AST and ALT levels rise to >5,000 U/L. Hepatocyte necrosis in this patient will initially localize to which of the following anatomic areas of the liver?",
+                options: {
+                    A: "Centrilobular regions (Zone 3)",
+                    B: "Mid-zonal regions (Zone 2)",
+                    C: "Periportal regions (Zone 1)",
+                    D: "Portal tracts",
+                    E: "Space of Disse"
+                },
+                correctAnswer: "A",
+                rationale: "Acetaminophen toxicity causes acute/fulminant hepatic failure. Coagulative necrosis begins in the centrilobular regions (Zone 3) due to the high prevalence of CYP-450 enzymes here, which metabolize the drug into toxic intermediates.",
+                source: "Pathology of the Liver PDF, Slide 19: 'Acute/ Fulminant Hepatic Failure (example= acetaminophen)... Coagulative Necrosis- begins in centrilobular regions (zone 3) due to high prevalence of CYP-450 enzymes here'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Toxic Injury - Aspirin).",
+                question: "A 3-year-old boy is brought to the emergency department with vomiting, lethargy, and hepatomegaly. His parents state he recently had a viral illness (influenza B) and was given aspirin for a fever. If a liver biopsy were performed, which of the following is the hallmark histologic finding for this patient's condition?",
+                options: {
+                    A: "Ballooning degeneration",
+                    B: "Ground-glass hepatocytes",
+                    C: "Macrovesicular steatosis",
+                    D: "Microvesicular steatosis",
+                    E: "Mallory-Denk bodies"
+                },
+                correctAnswer: "D",
+                rationale: "Reye syndrome occurs in children given aspirin for viral illnesses (VZV, influenza B). Due to mitochondrial damage of hepatocytes, the hallmark histologic finding is microvesicular steatosis (fat globules smaller than the hepatocyte nucleus).",
+                source: "Pathology of the Liver PDF, Slide 20: 'Reye syndrome • Children < 4-years-old • Aspirin taken for a viral illness... Hallmark is microvesicular steatosis'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Fatty Liver Disease - Alcohol).",
+                question: "A 55-year-old man with a long history of heavy alcohol consumption is found to have an enlarged, yellow, soft, and greasy liver on autopsy. The pathogenesis of this steatosis involves the depletion of which of the following molecules, causing a shift towards fatty acid biosynthesis?",
+                options: {
+                    A: "ATP7B",
+                    B: "Glutathione",
+                    C: "NAD+",
+                    D: "Prothrombin",
+                    E: "UDP glucuronyl transferase"
+                },
+                correctAnswer: "C",
+                rationale: "Alcohol metabolism by ADH and ALDH depletes NAD+. Because NAD+ is required for fatty acid oxidation, this depletion decreases catabolism and shifts processes toward fatty acid biosynthesis, resulting in fat accumulation in the liver.",
+                source: "Pathology of the Liver PDF, Slide 34: 'Alcohol causes buildup of triglycerides via multiple mechanisms • ADH and ALDH deplete NAD+ • NAD+ required for fatty acid (FA) oxidation • Decreased catabolism, shifting processes towards FA biosynthesis'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Fatty Liver Disease - Non-alcohol/MASLD).",
+                question: "A 48-year-old woman with a BMI of 34 kg/m ² and type II diabetes mellitus is evaluated for chronically elevated AST and ALT levels. She reports drinking no alcohol. A liver biopsy shows steatohepatitis. Which of the following patient factors is the best predictor of severe fibrosis and disease progression in her condition?",
+                options: {
+                    A: "Elevated levels of serum ferritin",
+                    B: "Presence of autoantibodies (ANA, ASMA)",
+                    C: "Presence of diabetes mellitus and obesity",
+                    D: "Pronounced microvesicular steatosis",
+                    E: "Viral hepatitis coinfection"
+                },
+                correctAnswer: "C",
+                rationale: "In Metabolic-dysfunction Associated Steatohepatitis (MASH), the presence of Type II Diabetes Mellitus (DM II) and obesity is the best predictor of severe fibrosis and disease progression.",
+                source: "Pathology of the Liver PDF, Slide 42: 'Metabolic-dysfunction Associated Steatohepatitis (MASH) • The presence of DM II and obesity is the best predictor of severe fibrosis and disease progression'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Autoimmune - Primary Biliary Cholangitis).",
+                question: "A 45-year-old woman presents with severe fatigue, pruritus, and obstructive jaundice. Laboratory testing reveals high titers of anti-mitochondrial antibodies (AMA). A liver biopsy is most likely to show which of the following?",
+                options: {
+                    A: "\"Chicken wire\" fibrosis around central veins",
+                    B: "Concentric \"onion-skinning\" around bile ducts",
+                    C: "Florid duct lesions with granulomas",
+                    D: "Prominent plasma cell infiltrates in the portal tract",
+                    E: "Shrunken hepatocytes with intensely eosinophilic cytoplasm"
+                },
+                correctAnswer: "C",
+                rationale: "Primary Biliary Cholangitis (PBC) predominantly affects women aged 40-50, is characterized by AMA positivity, and histologically shows autoimmune granulomatous destruction of intrahepatic bile ducts (florid duct lesions).",
+                source: "Pathology of the Liver PDF, Slide 47-48: 'Primary Biliary Cholangitis... 90% have high titers of anti-mitochondrial antibodies (AMA)... Granulomas (florid duct lesion)'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Autoimmune - Primary Sclerosing Cholangitis).",
+                question: "A 32-year-old man with a known history of ulcerative colitis presents with fatigue and pruritus. Endoscopic retrograde cholangiopancreatography (ERCP) shows a beading pattern of his extrahepatic bile ducts with strictures and dilations. A liver biopsy of the smaller ducts will most likely reveal which of the following?",
+                options: {
+                    A: "Circumferential \"onion-skinning\" fibrosis",
+                    B: "Granulomatous destruction of bile ducts",
+                    C: "Ground-glass appearance of hepatocytes",
+                    D: "PAS-positive, diastase-resistant globules",
+                    E: "Prominent plasma cell infiltrates"
+                },
+                correctAnswer: "A",
+                rationale: "Primary Sclerosing Cholangitis (PSC) is strongly associated with ulcerative colitis (70% of patients). Histologically, the smaller ducts exhibit striking circumferential fibrosis known as \"onion skinning\".",
+                source: "Pathology of the Liver PDF, Slide 50: 'Primary Sclerosing Cholangitis... Smaller ducts • Striking circumferential fibrosis: “onion skinning”'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Autoimmune - Autoimmune Hepatitis).",
+                question: "A 26-year-old woman is evaluated for an indolent chronic liver disorder. Serologic testing is positive for antinuclear antibodies (ANA) and anti-smooth muscle antibodies (ASMA). Her physician initiates immunosuppressive therapy. Microscopic evaluation of her liver is most likely to demonstrate abundant infiltrates of which of the following cell types?",
+                options: {
+                    A: "Eosinophils",
+                    B: "Macrophages",
+                    C: "Neutrophils",
+                    D: "Plasma cells",
+                    E: "Stellate cells"
+                },
+                correctAnswer: "D",
+                rationale: "Autoimmune hepatitis often presents in young women with high titers of autoantibodies (ANA, ASMA). Histologically, the mononuclear infiltrate frequently has abundant plasma cells.",
+                source: "Pathology of the Liver PDF, Slide 45: 'Autoimmune Hepatitis... Antinuclear antibodies • Anti-smooth muscle antibodies... Mononuclear infiltrate frequently has abundant plasma cells'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Vascular - Ischemia).",
+                question: "A 68-year-old man suffers a massive myocardial infarction and prolonged hypotensive shock. Three days later, his AST and ALT levels are markedly elevated. A liver biopsy demonstrates coagulative necrosis selectively affecting the hepatocytes furthest from the arterial blood flow. This necrosis is predominantly located in which of the following areas?",
+                options: {
+                    A: "Centrilobular region",
+                    B: "Gallbladder fossa",
+                    C: "Mid-zonal region",
+                    D: "Periportal region",
+                    E: "Portal triad"
+                },
+                correctAnswer: "A",
+                rationale: "\"Shock liver\" or ischemic injury causes centrilobular necrosis. Hepatocytes in zone 3 (centrilobular) are the furthest from arterial blood flow and undergo ischemic, coagulative necrosis in low flow states.",
+                source: "Pathology of the Liver PDF, Slide 59: 'Ischemia / shock liver • Centrilobular necrosis • Hepatocytes in zone 3 are furthest from arterial blood flow • undergo ischemic, coagulative necrosis in low flow states'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Vascular - Congestion / Budd-Chiari).",
+                question: "A 28-year-old woman on oral contraceptives presents with acute severe abdominal pain, hepatomegaly, and rapidly accumulating ascites. Imaging confirms thrombosis of one or more major hepatic veins. This condition is formally known as:",
+                options: {
+                    A: "Budd-Chiari Syndrome",
+                    B: "Hepatorenal Syndrome",
+                    C: "Reye Syndrome",
+                    D: "Trousseau Syndrome",
+                    E: "Wilson Disease"
+                },
+                correctAnswer: "A",
+                rationale: "Budd-Chiari syndrome is the thrombosis of one or more major hepatic veins blocking outflow from the liver. It presents with hepatomegaly, ascites, and abdominal pain, and is associated with hypercoagulable states like oral contraceptive use.",
+                source: "Pathology of the Liver PDF, Slide 60: 'Budd-Chiari Syndrome • Thrombosis of one or more major hepatic veins, blocking outflow from the liver... Hepatomegaly, ascites, abdominal pain... Usually associated with hypercoaguable states: • Oral contraceptives'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Inherited - Hemochromatosis).",
+                question: "A 45-year-old man presents with new-onset diabetes mellitus, darkening skin pigmentation, and signs of cirrhosis. Laboratory testing reveals elevated ferritin, elevated iron, and decreased TIBC. Genetic testing is most likely to reveal a loss-of-function mutation in which of the following genes?",
+                options: {
+                    A: "Alpha-1-AT",
+                    B: "ATP7B",
+                    C: "HFE",
+                    D: "K-RAS",
+                    E: "VKORC1"
+                },
+                correctAnswer: "C",
+                rationale: "The patient has the classic triad of hemochromatosis (cirrhosis, diabetes mellitus, skin pigmentation/\"bronze diabetes\"). This is an autosomal recessive defect in iron absorption due to mutations in the HFE gene (C282Y > H63D).",
+                source: "Pathology of the Liver PDF, Slide 55-57: 'Hemochromatosis... Classic triad: • Cirrhosis • diabetes mellitus • skin pigmentation (“bronze diabetes”)... Autosomal recessive defect in iron absorption • HFE gene C282Y > H63D'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Inherited - Wilson Disease).",
+                question: "A 19-year-old male presents with signs of psychosis and mild behavioral changes. Physical examination reveals brown rings around the periphery of his corneas. Laboratory testing shows elevated liver enzymes and low serum ceruloplasmin. The pathogenesis of this disorder involves the toxic accumulation of which of the following metals?",
+                options: {
+                    A: "Calcium",
+                    B: "Copper",
+                    C: "Iron",
+                    D: "Lead",
+                    E: "Zinc"
+                },
+                correctAnswer: "B",
+                rationale: "Wilson disease is caused by an ATP7B mutation leading to toxic levels of copper in the liver, brain, and eyes (Kayser-Fleischer rings). Serum ceruloplasmin is typically low.",
+                source: "Pathology of the Liver PDF, Slide 52-53: 'Wilson Disease • Toxic levels of copper: • Liver • Brain • Eye... Cornea; Kayser-Fleischer rings... Low serum ceruloplasmin'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO3: Discuss the clinicopathologic aspects of liver pathology due to a variety of etiologies (Inherited - Alpha-1 Antitrypsin Deficiency).",
+                question: "A 35-year-old man who has never smoked develops severe pulmonary emphysema and cirrhosis. A liver biopsy stained with Periodic acid-Schiff (PAS) demonstrates diastase-resistant magenta cytoplasmic granules. The patient is most likely homozygous for which of the following alleles?",
+                options: {
+                    A: "C282Y allele",
+                    B: "H63D allele",
+                    C: "PiZZ allele",
+                    D: "Wild-type KRAS allele",
+                    E: "Wild-type TPMT allele"
+                },
+                correctAnswer: "C",
+                rationale: "Alpha-1-Antitrypsin Deficiency (AAT) leads to pulmonary emphysema and hepatic disease due to the retention of mutant forms of AAT in the liver. Homozygotes for the PiZZ allele have only 10% of normal AAT levels. Histology shows PAS-positive, diastase-resistant globules.",
+                source: "Pathology of the Liver PDF, Slides 54 & 66: 'α1-Antitrypsin Deficiency (AAT)... Homozygotes for the PiZZ allele have only 10% of normal AAT levels... PAS + diastase resistant globules within hepatocytes'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO4: Identify the pathophysiology, histology, laboratory features, and clinical sequelae of cirrhosis.",
+                question: "A 50-year-old man is diagnosed with cirrhosis following a liver biopsy. The biopsy demonstrates regenerative nodules of hepatocytes surrounded by bands of fibrosis. Which of the following cells, activated in the space of Disse, is primarily responsible for the production of this collagenous fibrosis via TGF-β signaling?",
+                options: {
+                    A: "Endothelial cells",
+                    B: "Kupffer cells",
+                    C: "Plasma cells",
+                    D: "Portal vein branches",
+                    E: "Stellate (Ito) cells"
+                },
+                correctAnswer: "E",
+                rationale: "The bands of fibrosis seen in cirrhosis are mediated by TGF-β causing the activation of stellate (Ito) cells in the space of Disse and portal fibroblasts.",
+                source: "Pathology of the Liver PDF, Slide 12: 'Cirrhosis= End-stage liver disease... Bands of fibrosis • Mediated by TGF-β • Activation of stellate (Ito) cells in space of Disse and portal fibroblasts'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO4: Identify the pathophysiology, histology, laboratory features, and clinical sequelae of cirrhosis.",
+                question: "A 55-year-old man with end-stage cirrhosis presents with rapidly developing renal failure. His nephrologist explains that his kidneys are structurally normal, but the severe portal hypertension has triggered massive systemic changes leading to renal hypoperfusion. Which of the following mechanisms is directly responsible for this specific sequela (hepatorenal syndrome)?",
+                options: {
+                    A: "Activation of Kupffer cells",
+                    B: "Biliary tract obstruction",
+                    C: "Myocardial infarction",
+                    D: "Splanchnic vasodilation",
+                    E: "Thrombosis of the hepatic vein"
+                },
+                correctAnswer: "D",
+                rationale: "Hepatorenal syndrome is a rapidly developing renal failure secondary to cirrhosis. It occurs because the liver sees high pressure (portal hypertension), which triggers splanchnic vasodilation, stealing blood flow from the kidneys.",
+                source: "Pathology of the Liver PDF, Slide 14: 'Symptoms of cirrhosis • Portal Hypertension... Hepatorenal syndrome (rapidly developing renal failure secondary to cirrhosis) • Liver sees high pressure, triggers splanchnic vasodilation'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO5: Discuss selected benign neoplasms of the liver.",
+                question: "A 42-year-old woman is found to have an incidental 4-cm, discrete, red-blue, soft nodule directly beneath the capsule of her liver on a routine ultrasound. Her physician advises against a blind percutaneous biopsy of this specific lesion. Which of the following is the most likely reason for avoiding biopsy of this common, benign tumor?",
+                options: {
+                    A: "High risk of malignant transformation to cholangiocarcinoma",
+                    B: "High risk of seeding the tumor tract with malignant cells",
+                    C: "The lesion consists of vascular channels and biopsy may cause intra-abdominal bleeding",
+                    D: "The lesion is a fluid-filled pseudocyst that will resolve spontaneously",
+                    E: "The mass is highly infectious"
+                },
+                correctAnswer: "C",
+                rationale: "A cavernous hemangioma is the most common benign liver tumor. It consists of endothelial cell-lined vascular channels. A blind percutaneous biopsy is contraindicated because it may cause severe intra-abdominal bleeding.",
+                source: "Pathology of the Liver PDF, Slide 62: 'Cavernous Hemangioma... Consists of endothelial cell-lined vascular channels • Discrete, red-blue, soft nodules • Often directly beneath the capsule • Blind percutaneous biopsy may cause intra-abdominal bleeding'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO5: Discuss selected benign neoplasms of the liver.",
+                question: "A 28-year-old woman who has taken oral contraceptive pills for 10 years presents to the emergency department with acute, life-threatening intra-abdominal hemorrhage. Emergent surgery reveals a ruptured subcapsular liver mass. Histologic evaluation of the mass shows a loss of normal architecture with lone arteries and no portal tracts. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Cavernous hemangioma",
+                    B: "Cholangiocarcinoma",
+                    C: "Hepatic adenoma",
+                    D: "Hepatocellular carcinoma",
+                    E: "Primary sclerosing cholangitis"
+                },
+                correctAnswer: "C",
+                rationale: "Hepatic adenomas are benign hepatocellular neoplasms that grow with exposure to estrogen (oral contraceptive pills, pregnancy). They are subcapsular and carry a risk of rupture, causing life-threatening hemorrhage. Histology shows loss of portal tracts and lone arteries.",
+                source: "Pathology of the Liver PDF, Slide 63: 'Hepatic Adenoma... Grow with exposure to estrogen • Oral contraceptive pills... May rupture, especially during pregnancy, causing life threatening intraabdominal hemorrhage • Histology- loss of normal architecture (no portal tracts, lone arteries)'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO6: Describe clinicopathologic features of hepatocellular carcinoma.",
+                question: "A 65-year-old man with a long history of Hepatitis C-induced cirrhosis presents with right upper quadrant pain, new ascites, and weight loss. Examination reveals tender hepatomegaly. The physician suspects a malignant tumor of the hepatocytes. Which of the following serum tumor markers is most likely to be elevated in this patient?",
+                options: {
+                    A: "Alpha-1-antitrypsin",
+                    B: "Alpha-fetoprotein (AFP)",
+                    C: "CA19-9",
+                    D: "Carcinoembryonic antigen (CEA)",
+                    E: "Ceruloplasmin"
+                },
+                correctAnswer: "B",
+                rationale: "Hepatocellular Carcinoma (HCC) is a malignant tumor of hepatocytes often arising in the setting of cirrhosis (from HBV, HCV, etc.). The serum tumor marker for HCC is alpha-fetoprotein (AFP).",
+                source: "Pathology of the Liver PDF, Slide 64: 'Hepatocellular Carcinoma (HCC)... Risk factors: • Chronic hepatitis (HBV or HCV) • Cirrhosis (ALL CAUSES)... Serum tumor marker is α – fetoprotein (AFP)'"
+            },
+            {
+                section: "Pathology of the Liver",
+                fullLO: "LO6: Describe clinicopathologic features of hepatocellular carcinoma.",
+                question: "A pathologist examines a needle biopsy from a large liver mass in a patient with chronic Hepatitis B. The pathologist diagnoses hepatocellular carcinoma (HCC). Which of the following histologic features is characteristic of this malignancy compared to a benign hepatic adenoma?",
+                options: {
+                    A: "Abundant plasma cell infiltrates",
+                    B: "Chicken wire fibrosis",
+                    C: "Nuclear atypia with coarse clumped chromatin",
+                    D: "Preservation of portal tracts",
+                    E: "Prominent microvesicular steatosis"
+                },
+                correctAnswer: "C",
+                rationale: "HCC histology is characterized by a loss of normal architecture (thickened cords, pseudorosettes) and notable nuclear atypia (large pleomorphic nuclei with coarse clumped chromatin). Benign adenomas lack this nuclear atypia.",
+                source: "Pathology of the Liver PDF, Slide 64: 'HISTOLOGY: 1-Loss of normal architecture (thickened cords, pseudorosettes, lack of portal structures, “lone” arteries). 2- nuclear atypia- Large pleomorphic nuclei with coarse clumped chromatin'"
+            },
+
+            // --- Section 2: Biliary and Pancreas Pathology ---
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO1: Discuss cholelithiasis, choledocholithiasis and the clinicopathologic sequelae.",
+                question: "A 45-year-old woman with obesity and dyslipidemia presents with severe, spasmodic right upper quadrant pain that radiates to her back. Ultrasound reveals multiple firm, pale yellow, radiolucent stones in her gallbladder. The formation of these specific stones is most directly caused by the precipitation of which of the following substances out of solution?",
+                options: {
+                    A: "Calcium carbonate",
+                    B: "Cholesterol",
+                    C: "Conjugated bilirubin",
+                    D: "Unconjugated bilirubin",
+                    E: "Urobilinogen"
+                },
+                correctAnswer: "B",
+                rationale: "The patient has cholesterol stones, which make up 80% of stones in the US. They form when cholesterol concentration is too high and it crystallizes out of solution. They are typically radiolucent, pale yellow, and firm.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 7: 'CHOLELITHIASIS (CHOLESTEROL STONES) • 80% of stones in USA... If cholesterol concentration is too high • Crystalizes out of solution... Pale yellow, firm... Most are radiolucent*'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO1: Discuss cholelithiasis, choledocholithiasis and the clinicopathologic sequelae.",
+                question: "A 28-year-old man with sickle cell anemia presents with chronic biliary pain. Imaging reveals multiple radiopaque stones in his gallbladder. The stones are surgically removed and appear black and brown. These pigment stones are primarily composed of calcium salts formed from an excess of which of the following in the biliary tree?",
+                options: {
+                    A: "Cholesterol",
+                    B: "Conjugated bilirubin",
+                    C: "Phospholipids",
+                    D: "Unconjugated bilirubin",
+                    E: "Urea"
+                },
+                correctAnswer: "D",
+                rationale: "Pigment stones are caused by excess unconjugated bilirubin in the biliary tree (often due to chronic hemolysis like sickle cell anemia). Calcium salts of unconjugated bilirubin precipitate to form these black or brown, frequently radiopaque stones.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 8: 'CHOLELITHIASIS (PIGMENT STONES) • Due to excess unconjugated bilirubin in the biliary tree • Calcium salts of unconjugated bilirubin precipitate to form black or brown stones'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO2: Distinguish between acute and chronic cholecystitis.",
+                question: "A 50-year-old woman is evaluated in the emergency department for severe, steady right upper quadrant pain lasting 8 hours, fever, and nausea. Physical exam demonstrates severe pain on inspiration when palpating the right subcostal margin (Murphy's sign). She undergoes emergency surgery. Gross pathologic evaluation of the removed organ will most likely reveal which of the following?",
+                options: {
+                    A: "A shrunken, fibrotic gallbladder",
+                    B: "A thickened gallbladder wall with Rokitansky-Aschoff sinuses",
+                    C: "A large, tense gallbladder with a bright red serosa covered in fibrin",
+                    D: "A mass infiltrating into the liver bed",
+                    E: "Widespread granulomatous destruction of the bile ducts"
+                },
+                correctAnswer: "C",
+                rationale: "The clinical presentation is classic for acute cholecystitis (pain >6 hrs, fever, Murphy's sign). Gross pathology of acute cholecystitis shows a large, tense gallbladder that is thickened, edematous, and bright red, often covered with fibrin.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 9: 'ACUTE CHOLECYSTITIS... Symptoms: biliary pain > 6 hours, severe, steady... Murphy’s sign... Gross pathology • Gallbladder is large and tense – may rupture • Thickened, edematous, bright red, serosa may be covered with fibrin'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO2: Distinguish between acute and chronic cholecystitis.",
+                question: "A 55-year-old woman has experienced years of vague, dull right upper quadrant pain and nausea that typically occurs after eating a fatty meal. She eventually undergoes an elective cholecystectomy. Microscopic evaluation of her gallbladder reveals a thickened, fibrotic wall with mucosal outpouchings extending deep into the muscular layer. What are these outpouchings called?",
+                options: {
+                    A: "Councilman bodies",
+                    B: "Florid duct lesions",
+                    C: "Mallory-Denk bodies",
+                    D: "Peyer's patches",
+                    E: "Rokitansky-Aschoff sinuses"
+                },
+                correctAnswer: "E",
+                rationale: "The patient has chronic cholecystitis, characterized clinically by recurrent biliary colic (vague dull pain triggered by fatty meals). Histology shows a thickened/fibrotic wall, chronic inflammation, and the classic finding of Rokitansky-Aschoff sinuses.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 10: 'CHRONIC CHOLECYSTITIS... Thickened/fibrotic wall • Chronic inflammation • Rokitansky-Aschoff sinuses • Biliary colic: • Postprandial • Vague, dull RUQ pain'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO3: Discuss the clinical presentation and features of gallbladder adenocarcinoma.",
+                question: "A 70-year-old Native American woman undergoes an elective cholecystectomy for presumed cholelithiasis. During gross examination of the specimen, the pathologist discovers an exophytic mass with poorly defined diffuse thickening of the gallbladder wall. Which of the following conditions is present in 90% of patients diagnosed with this type of cancer?",
+                options: {
+                    A: "Chronic viral hepatitis",
+                    B: "Gallstones",
+                    C: "Primary sclerosing cholangitis",
+                    D: "Sickle cell anemia",
+                    E: "Ulcerative colitis"
+                },
+                correctAnswer: "B",
+                rationale: "Gallbladder cancer (adenocarcinoma) is most common in older women and certain populations (Hispanics, Native Americans). Gallstones are present in 90% of cases and are a major risk factor.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 13: 'GALLBLADDER CANCER • Adenocarcinoma arising from the epithelium... Hispanics and Native Americans • Gallstones are present in 90% of cases'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO3: Discuss the clinical presentation and features of gallbladder adenocarcinoma.",
+                question: "A 75-year-old woman presents with anorexia, weight loss, and jaundice. Imaging reveals a mass arising from the gallbladder that has invaded deeply into the adjacent liver parenchyma. A biopsy of the mass demonstrates malignant glands. Which of the following statements most accurately reflects the typical clinical course of this neoplasm?",
+                options: {
+                    A: "It is easily curable with simple cholecystectomy.",
+                    B: "It is most often discovered at an early, resectable stage.",
+                    C: "It is rarely discovered at a resectable stage due to insidious symptoms.",
+                    D: "It typically presents with severe, acute, tearing abdominal pain.",
+                    E: "It typically causes isolated left lower quadrant pain."
+                },
+                correctAnswer: "C",
+                rationale: "Gallbladder adenocarcinoma is insidious and has symptoms that are indistinguishable from cholelithiasis. Therefore, it is rarely discovered at a resectable stage and usually has already invaded the liver or spread to lymph nodes by the time of diagnosis.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 13: 'GALLBLADDER CANCER... Rarely discovered at resectable stage • Usually has invaded the liver, spread to the bile ducts or portal hepatic lymph nodes • Insidious • Symptoms indistinguishable from symptoms of cholelithiasis'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO4: Discuss acute and chronic pancreatitis with respect to clinical presentation, etiology, gross, and histologic features.",
+                question: "A 48-year-old man with a history of alcohol abuse presents to the emergency department with severe, boring epigastric pain radiating to his back. His serum lipase is markedly elevated. If a biopsy of the peripancreatic tissue were performed, which of the following histologic findings would be most characteristic of this acute process?",
+                options: {
+                    A: "Calcium salts of unconjugated bilirubin",
+                    B: "Concentric onion-skin fibrosis",
+                    C: "Extensive dense fibrosis and ductal plugs",
+                    D: "Fat necrosis and hemorrhagic liquefactive necrosis",
+                    E: "Granulomatous destruction of acini"
+                },
+                correctAnswer: "D",
+                rationale: "Acute pancreatitis is characterized by autodigestion of the pancreas by activated enzymes (like trypsin), leading to liquefactive hemorrhagic necrosis of the pancreas and enzymatic fat necrosis of the peripancreatic fat.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 18: 'ACUTE PANCREATITIS... Autodigestion of pancreas by activated pancreatic enzymes... Liquefactive hemorrhagic necrosis of pancreas and fat necrosis of perpancreatic fat'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO4: Discuss acute and chronic pancreatitis with respect to clinical presentation, etiology, gross, and histologic features.",
+                question: "A 55-year-old man presents with chronic diarrhea, weight loss, and repeated bouts of abdominal pain. He has a 30-year history of heavy alcohol consumption. Abdominal imaging shows a shrunken, fibrotic pancreas with prominent ductal dilation and calcifications. Which of the following mechanisms is primarily responsible for the ductal obstruction seen in this patient's chronic condition?",
+                options: {
+                    A: "Accumulation of mucin from a cystic neoplasm",
+                    B: "Autoimmune destruction of the major pancreatic duct",
+                    C: "Gallstone impaction at the sphincter of Oddi",
+                    D: "Protein concretions forming ductal plugs",
+                    E: "Spasm of the duodenal musculature"
+                },
+                correctAnswer: "D",
+                rationale: "In chronic pancreatitis, long-term alcohol abuse increases the protein concentration of pancreatic secretions, which forms concretions or ductal plugs. This ultimately leads to fibrosis of the parenchyma, dilation of ducts, and exocrine insufficiency (malabsorption).",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 21: 'CHRONIC PANCREATITIS... Causes: • Long-term alcohol abuse (adults)... Concretions: Alcohol (and Cystic Fibrosis) increase the protein concentration of pancreatic secretions, forming ductal plugs'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO5: Compare and contrast the presentation of intrahepatic vs extrahepatic cholangiocarcinoma and recognize risk factors for this tumor.",
+                question: "A 60-year-old man presents with rapid onset of jaundice, nausea, and acholic (pale) stools. Imaging reveals a small mass causing complete obstruction of his extrahepatic bile ducts. In contrast, if this patient had developed an intrahepatic cholangiocarcinoma, what would be the most likely clinical presentation?",
+                options: {
+                    A: "A large mass that remains asymptomatic until much of the liver is replaced",
+                    B: "Chronic malabsorption and steatorrhea",
+                    C: "Recurrent episodes of acute pancreatitis",
+                    D: "Severe, episodic postprandial right upper quadrant pain",
+                    E: "Spontaneous intra-abdominal hemorrhage"
+                },
+                correctAnswer: "A",
+                rationale: "Intrahepatic cholangiocarcinoma typically presents as a large mass because it causes symptoms only when it has replaced much of the liver. Conversely, extrahepatic cholangiocarcinoma is usually small at the time of diagnosis because it quickly obstructs the bile ducts, leading rapidly to jaundice and acholic stools.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 14: 'CHOLANGIOCARCINOMA... Intrahepatic biliary ducts • Large mass at presentation • Cause symptoms only when they have replaced much of the liver... Extrahepatic biliary ducts • Small at time of diagnosis • Partial or complete obstruction of bile ducts leads rapidly to jaundice'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO5: Compare and contrast the presentation of intrahepatic vs extrahepatic cholangiocarcinoma and recognize risk factors for this tumor.",
+                question: "A 50-year-old man immigrates to the United States from Thailand. He is found to have a primary liver malignancy originating from the bile duct epithelium. Which of the following infectious agents is a well-documented risk factor for the development of this specific carcinoma?",
+                options: {
+                    A: "Helicobacter pylori",
+                    B: "Hepatitis A virus",
+                    C: "Mycobacterium tuberculosis",
+                    D: "Opisthorchis viverrini",
+                    E: "Plasmodium falciparum"
+                },
+                correctAnswer: "D",
+                rationale: "Liver fluke infections, specifically Opisthorchis viverrini (endemic in Thailand) and Clonorchis sinensis, are known risk factors for cholangiocarcinoma.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 15: 'CHOLANGIOCARCINOMA (CC)... Risk factors:... Liver fluke infections • Opisthorchis viverrini- Thailand'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO6: Recognize various common pancreatic tumors and how they differ according to histologic characteristics, epidemiology, and location.",
+                question: "A 72-year-old man with a 40-pack-year smoking history presents with severe, radiating back pain and jaundice. A CT scan reveals a mass in the head of the pancreas. Histologic evaluation shows haphazardly arranged \"naked\" glands invading through retroperitoneal fat and entrapping local nerves. Which of the following genetic alterations is present in >95% of these tumors?",
+                options: {
+                    A: "Alpha-1-antitrypsin mutation",
+                    B: "ATP7B mutation",
+                    C: "HFE C282Y mutation",
+                    D: "K-RAS mutation",
+                    E: "MEN-1 mutation"
+                },
+                correctAnswer: "D",
+                rationale: "Pancreatic Ductal Adenocarcinoma (PDAC) is highly invasive, aggressive, associated with smoking, and commonly presents with perineural invasion (causing severe pain). The K-RAS mutation is present in >95% of these tumors.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 23: 'PANCREATIC DUCTAL ADENOCARCINOMA (PDAC)... K-RAS mutation (>95%)... SMOKING (2-3x the risk)... Entraps nerves (increased pain)'"
+            },
+            {
+                section: "Biliary and Pancreas Pathology",
+                fullLO: "LO6: Recognize various common pancreatic tumors and how they differ according to histologic characteristics, epidemiology, and location.",
+                question: "A 45-year-old woman presents with episodes of confusion and diaphoresis that are relieved by eating. Laboratory testing confirms hyperinsulinemia and hypoglycemia. Imaging reveals a solitary, well-differentiated mass in the tail of the pancreas. Histologically, the cells have round nuclei with stippled \"salt-and-pepper\" chromatin. This neoplasm is associated with which of the following inherited syndromes?",
+                options: {
+                    A: "Alpha-1 antitrypsin deficiency",
+                    B: "Familial adenomatous polyposis",
+                    C: "Hemochromatosis",
+                    D: "Multiple Endocrine Neoplasia type 1 (MEN-1)",
+                    E: "Wilson disease"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has an insulinoma, a type of Pancreatic Neuroendocrine Tumor (PanNET). PanNETs are well-differentiated, often solitary, characterized histologically by \"salt-and-pepper\" chromatin, and carry a risk factor of MEN-1 syndrome.",
+                source: "BILIARY AND PANCREAS PATHOLOGY PDF, Slide 26: 'PANCREATIC NEUROENDOCRINE TUMORS (PANNET) • A well-differentiated endocrine tumor... Risk Factor: MEN-1... Typical round nuclei, with stippled “salt-and-pepper” chromatin'"
+            },
+
+            // --- Section 3: Diagnosis and Management of Pancreatic Disorders ---
+            {
+                section: "Diagnosis and Management of Pancreatic Disorders",
+                fullLO: "LO1: Compare and contrast the defining features and etiologies of acute and chronic pancreatitis.",
+                question: "A 45-year-old man presents to the emergency department complaining of severe abdominal pain. To officially establish the diagnosis of acute pancreatitis regardless of the etiology, the patient must meet at least two of three defining criteria. If he has classic upper abdominal pain, which of the following laboratory findings would satisfy the second criterion?",
+                options: {
+                    A: "AST > 3 times the upper limit of normal",
+                    B: "Serum amylase or lipase > 3 times the upper limit of normal",
+                    C: "Serum calcium < 8 mg%",
+                    D: "Serum glucose > 200 mg%",
+                    E: "WBC count > 16,000/mm³"
+                },
+                correctAnswer: "B",
+                rationale: "The diagnosis of acute pancreatitis requires meeting 2 out of 3 criteria: 1) Clinical: upper abdominal pain, 2) Laboratory: serum amylase or lipase > 3x the upper limit of normal, and 3) Imaging: CT, MRI, or ultrasonography evidence.",
+                source: "Disorders of the Pancreas PDF, Slide 9: 'Definition of Acute Pancreatitis... Acute Pancreatitis 2/3 criteria... Clinical: Upper abdominal pain... Laboratory: Serum amylase or lipase > 3 X upper limit of normal'"
+            },
+            {
+                section: "Diagnosis and Management of Pancreatic Disorders",
+                fullLO: "LO1: Compare and contrast the defining features and etiologies of acute and chronic pancreatitis.",
+                question: "A 35-year-old woman with HIV is admitted to the hospital with severe epigastric pain radiating to the back. Her lipase is markedly elevated. She does not drink alcohol and an ultrasound of her gallbladder shows no gallstones. Which of the following antiretroviral medications is a known definite cause of acute pancreatitis?",
+                options: {
+                    A: "Abacavir",
+                    B: "Didanosine",
+                    C: "Efavirenz",
+                    D: "Lamivudine",
+                    E: "Zidovudine"
+                },
+                correctAnswer: "B",
+                rationale: "Certain drugs have definite associations with acute pancreatitis. Among AIDS drugs, Didanosine and Pentamidine are firmly linked to the disease.",
+                source: "Disorders of the Pancreas PDF, Slide 16: 'Drugs and Acute Pancreatitis : Definite associations... AIDS drugs • Didanosine'"
+            },
+            {
+                section: "Diagnosis and Management of Pancreatic Disorders",
+                fullLO: "LO2: Describe the clinical features of acute and chronic pancreatitis",
+                question: "A 50-year-old woman presents to the emergency department with acute pancreatitis. During the clinical assessment, the physician monitors her vital signs and symptoms closely to gauge the severity of her condition. Based on widespread clinical data, which of the following is the most frequently observed symptom or sign in patients presenting with acute pancreatitis?",
+                options: {
+                    A: "Abdominal pain",
+                    B: "Dyspnea",
+                    C: "Jaundice",
+                    D: "Melena",
+                    E: "Shock"
+                },
+                correctAnswer: "A",
+                rationale: "Abdominal pain is the most prevalent clinical feature, occurring in approximately 90-100% of patients presenting with acute pancreatitis.",
+                source: "Disorders of the Pancreas PDF, Slide 17: 'Symptoms and Signs in Acute Pancreatitis... Abd pain[Graph indicates ~95-100%]'"
+            },
+            {
+                section: "Diagnosis and Management of Pancreatic Disorders",
+                fullLO: "LO2: Describe the clinical features of acute and chronic pancreatitis",
+                question: "A 38-year-old man is hospitalized for acute pancreatitis. His physician orders daily blood draws to track markers of pancreatic injury. During the first week of his illness, which of the following enzymes is expected to peak highest relative to its normal limit and remain elevated the longest?",
+                options: {
+                    A: "Alkaline phosphatase",
+                    B: "Amylase",
+                    C: "C-reactive protein (CRP)",
+                    D: "Lipase",
+                    E: "Trypsinogen activation peptide"
+                },
+                correctAnswer: "D",
+                rationale: "In the laboratory assessment of acute pancreatitis, serum lipase levels peak much higher relative to normal and remain elevated for a longer duration compared to amylase.",
+                source: "Disorders of the Pancreas PDF, Slide 22: 'Enzymes Levels Relative to Normal & Pancreatitis...[Graph demonstrates Lipase peaking near 18x normal and staying elevated over 10 days, while Amylase peaks lower and falls faster]'"
+            },
+            {
+                section: "Diagnosis and Management of Pancreatic Disorders",
+                fullLO: "LO3: Describe the management, clinical course, and potential complications of acute and chronic pancreatitis.",
+                question: "A 60-year-old man is in the intensive care unit with severe acute pancreatitis. The critical care team is outlining his nutritional plan, as he has been unable to eat for several days. Assuming the patient tolerates it, which of the following approaches to nutritional support is recommended due to its superior safety profile?",
+                options: {
+                    A: "Early institution of total parenteral nutrition (TPN) via a central line",
+                    B: "Enteral nutrition",
+                    C: "Intravenous dextrose solutions only for 7 days",
+                    D: "Strict NPO status until all pain resolves",
+                    E: "Total parenteral nutrition (TPN) via a peripheral line"
+                },
+                correctAnswer: "B",
+                rationale: "In the management of acute pancreatitis requiring nutritional support, enteral nutrition is preferred and is considered safer than total parenteral nutrition (TPN). TPN is reserved for patients who have intolerance or severe pain with enteral feeds.",
+                source: "Disorders of the Pancreas PDF, Slide 43: 'Nutrition and Pancreatitis... Enteral nutrition is safer than TPN • TPN if intolerance or pain with enteral feeds'"
+            },
+            {
+                section: "Diagnosis and Management of Pancreatic Disorders",
+                fullLO: "LO3: Describe the management, clinical course, and potential complications of acute and chronic pancreatitis.",
+                question: "A 45-year-old woman is admitted with acute pancreatitis. Her condition deteriorates on hospital day 4, prompting a CT scan. The imaging reveals pancreatic necrosis involving >50% of the gland. Based on this finding, which of the following is the most appropriate next step in pharmacologic management?",
+                options: {
+                    A: "Administer prophylactic antibiotics for at least 2 weeks",
+                    B: "Begin high-dose corticosteroid therapy",
+                    C: "Initiate antiviral therapy",
+                    D: "Prescribe oral pancreatic enzyme replacement",
+                    E: "Withhold all antibiotics to prevent resistance"
+                },
+                correctAnswer: "A",
+                rationale: "Prophylactic antibiotics are recommended in acute pancreatitis if the patient has pancreatic necrosis >50% or cholangitis. If started, the treatment should be bold and last for at least 2 weeks.",
+                source: "Disorders of the Pancreas PDF, Slide 42: 'Recommendation on Prophylactic Antibiotics • If pancreatic necrosis >50% • Cholangitis • If you decide to give antibiotics, then be bold, treat for 2 weeks at least.'"
+            },
+
+            // --- Section 4: Pharmacogenomics ---
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO1: Discuss the concept of “personalized medicine.”",
+                question: "A primary care physician is attending a seminar on integrating modern genetics into daily practice to minimize adverse drug events. The speaker emphasizes shifting away from the traditional \"One-size-fits-all\" model. Which of the following best describes the primary goal of the pharmacogenomic (PGx) model in patient care?",
+                options: {
+                    A: "Classifying all patients based strictly on their self-identified ethnicity",
+                    B: "Developing broad-spectrum medications that apply uniformly to all patients",
+                    C: "Identifying rare chromosomal aneuploidies using karyotyping",
+                    D: "Recommending completely holistic, non-pharmacologic interventions",
+                    E: "Tailoring effective medications and doses to a person's genetic makeup"
+                },
+                correctAnswer: "E",
+                rationale: "Pharmacogenomics combines pharmacology and genomics to develop effective, safe medications and doses tailored specifically to a person's unique genetic makeup, branching away from the traditional \"one-size-fits-all\" model.",
+                source: "Pharmacogenomics PDF, Slide 3: 'Pharmacogenomics is the study of how genes affect a person’s response to drugs... to develop effective, safe medications and doses that will be tailored to a person’s genetic makeup.'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO1: Discuss the concept of “personalized medicine.”",
+                question: "Under the \"One-size-fits-all\" model of medicine, a significant number of patients receive standard drug therapies that lead to failure or toxicity. According to the pharmacogenomic (PGx) model algorithm, patients undergo genetic testing prior to therapy. This testing ultimately guides the physician to do which of the following?",
+                options: {
+                    A: "Treat with the normal drug/dose, an alternative dose, or an alternative drug",
+                    B: "Treat solely based on the patient's physical weight and age",
+                    C: "Eliminate the need for any medications",
+                    D: "Prescribe identical starting doses followed by trial-and-error titration",
+                    E: "Request FDA approval for a new experimental drug"
+                },
+                correctAnswer: "A",
+                rationale: "The PGx model uses testing to stratify patients into different groups: those who can be treated with the normal drug and dose, those who need an alternative dose, and those who need a completely alternative drug to avoid toxicity or failure.",
+                source: "Pharmacogenomics PDF, Slide 5: 'Pharmacogenomic (PGx) model -> PGx testing -> Treat with normal drug and dose / Treat with alternative drug or dose / Treat with alternative drug'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO2: Differentiate the types of pharmacogenomic genes/targets",
+                question: "A researcher is categorizing different genetic variants that alter patient responses to medications. She isolates a genetic polymorphism that specifically changes the structure of a cellular receptor, thereby altering how tightly a medication binds to it. This variance primarily influences which of the following mechanisms?",
+                options: {
+                    A: "Biliary excretion",
+                    B: "Drug administration route",
+                    C: "Pharmacodynamics (Targets)",
+                    D: "Pharmacokinetics (ADME)",
+                    E: "Renal clearance"
+                },
+                correctAnswer: "C",
+                rationale: "Genetic variation can influence drug response by affecting Pharmacokinetics (Absorption, Distribution, Metabolism, Excretion - ADME) or Pharmacodynamics (Targets, such as receptors). A change in a cellular receptor alters the drug's target, which is pharmacodynamics.",
+                source: "Pharmacogenomics PDF, Slide 37: 'Genetic variation can influence an individual’s response to drugs by affecting: • Pharmacokinetics (ADME) • Pharmcodynamics (Targets)'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO2: Differentiate the types of pharmacogenomic genes/targets",
+                question: "An oncologist is prescribing 5-fluorouracil (5-FU) and notes that the patient's genetic profile indicates a deficiency in the DPYD gene. Because this gene encodes an enzyme responsible for breaking down the drug in the liver, this specific variance falls into which of the following core categories of genetic variance?",
+                options: {
+                    A: "Metabolizers",
+                    B: "Targets",
+                    C: "Transporters",
+                    D: "Untoward Interactions",
+                    E: "Viral integrases"
+                },
+                correctAnswer: "A",
+                rationale: "Genetic variance can be grouped into four primary areas: Targets, Transporters, Metabolizers, and Untoward Interactions. A variance in an enzyme that breaks down a drug (like DPYD) directly falls under the \"Metabolizers\" category.",
+                source: "Pharmacogenomics PDF, Slide 11: 'Genetic Variance[Chart categories] Targets, Transporters, Metabolizers, Untoward Interactions'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO3: Describe the common sources of Genetic Variation.",
+                question: "A genetics laboratory sequences a patient's DNA and identifies an alteration in exactly one base pair within a coding gene. This specific alteration results in a premature stop codon, causing the production of a non-functional, truncated protein. Which of the following terms best categorizes this variant?",
+                options: {
+                    A: "Copy number variation (CNV)",
+                    B: "Insertion",
+                    C: "Inversion",
+                    D: "Missense SNP",
+                    E: "Nonsense SNP"
+                },
+                correctAnswer: "E",
+                rationale: "Single-nucleotide polymorphisms (SNPs) are alterations of one base pair. Non-synonymous SNPs change the amino acid sequence. A \"Nonsense\" SNP specifically creates a premature stop codon, leading to a truncated protein.",
+                source: "Pharmacogenomics PDF, Slide 8: 'Single Nucleotide Polymorphisms... Non-synonymous SNPs [include] Missense [and] Nonsense'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO3: Describe the common sources of Genetic Variation.",
+                question: "A team of geneticists is studying the differences between two unrelated human populations. They note that the vast majority of inter-individual differences in drug responses are caused by the most common type of polymorphism in the human genome. This most common source of genetic variation is the:",
+                options: {
+                    A: "Copy Number Variant (CNV)",
+                    B: "Large scale chromosomal deletion",
+                    C: "Segmental inversion",
+                    D: "Single-Nucleotide Polymorphism (SNP)",
+                    E: "Trinucleotide repeat expansion"
+                },
+                correctAnswer: "D",
+                rationale: "Single-nucleotide polymorphisms (SNPs) are the most common type of polymorphism and arise from an alteration of one base pair in a gene.",
+                source: "Pharmacogenomics PDF, Slide 37: 'Single-nucleotide polymorphisms (SNPs) are the most common type of polymorphism and arise from an alteration of one base pain in a gene'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO4: Apply pharmacogenomics data to drug selection",
+                question: "A 35-year-old man recently diagnosed with HIV is being evaluated for initiation of antiretroviral therapy. The physician considers prescribing an abacavir-containing regimen. To prevent a potentially life-threatening hypersensitivity reaction, the Clinical Pharmacogenetics Implementation Consortium (CPIC) strongly recommends screening for which of the following genomic markers?",
+                options: {
+                    A: "CYP2C19",
+                    B: "CYP2D6",
+                    C: "HLA-B1502",
+                    D: "HLA-B5701",
+                    E: "TPMT"
+                },
+                correctAnswer: "D",
+                rationale: "Patients with the HLA-B5701 allele are at a higher risk of life-threatening hypersensitivity reactions to abacavir. Screening for this allele prior to initiating therapy significantly reduces this risk.",
+                source: "Pharmacogenomics PDF, Slide 38: 'Abacavir | HLA-B5701 | Yes | Patients with the HLA-B*5701 allele are at a higher risk of life-threatening hypersensitivity reaction'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO4: Apply pharmacogenomics data to drug selection",
+                question: "A 72-year-old woman presents to an oncology clinic to initiate therapy for metastatic colon cancer. Her oncologist considers adding cetuximab, an epidermal growth factor receptor (EGFR) antagonist, to her regimen. Genetic profiling of her tumor reveals a mutant K-RAS allele. Based on this finding, which of the following is the most appropriate conclusion regarding her therapy?",
+                options: {
+                    A: "She requires a 50% dose reduction of cetuximab.",
+                    B: "She requires a significantly higher loading dose of cetuximab.",
+                    C: "She should be given cetuximab with high-dose prophylactic antihistamines.",
+                    D: "She is no longer eligible for cetuximab therapy.",
+                    E: "She is an ultra-rapid metabolizer and will clear the drug too quickly."
+                },
+                correctAnswer: "D",
+                rationale: "Cetuximab efficacy depends on the patient having wild-type K-RAS. Patients with mutant K-RAS do not benefit from EGFR antagonists and are no longer eligible for cetuximab therapy.",
+                source: "Pharmacogenomics PDF, Slides 38, 57: 'Cetuximab | K-Ras WT and EGFR | No | Patients must have K-Ras WT and EGFR for treatment in metastatic colorectal cancer... If she is found to have the mutant type... She would no longer be eligible for cetuximab therapy'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO5: Interpret drug reactions based on pharmacogenomics",
+                question: "A 56-year-old man who recently received a liver transplant is prescribed azathioprine as part of his immunosuppressive regimen. One month later, his complete blood count reveals severe myelosuppression. Genotypic testing is ordered and reveals nonfunctional alleles for the enzyme that metabolizes the drug. Which of the following enzymes is most likely deficient in this patient?",
+                options: {
+                    A: "CYP2C9",
+                    B: "CYP2D6",
+                    C: "Dihydropyrimidine dehydrogenase (DPYD)",
+                    D: "Thiopurine methyltransferase (TPMT)",
+                    E: "Xanthine oxidase"
+                },
+                correctAnswer: "D",
+                rationale: "Azathioprine is metabolized by Thiopurine methyltransferase (TPMT). Patients with low or absent TPMT activity cannot properly degrade the drug, leading to a much higher active drug level and a significantly increased risk of severe myelotoxicity/myelosuppression.",
+                source: "Pharmacogenomics PDF, Slide 38: 'Azathioprine | TPMT | Yes | Patients with low or absent TPMT are at a higher risk of myelotoxicity... TPMT 719A>G SNP leads to increases in TMPT protein degradation, leading to much higher drug levels'"
+            },
+            {
+                section: "Pharmacogenomics",
+                fullLO: "LO5: Interpret drug reactions based on pharmacogenomics",
+                question: "A 30-year-old woman is prescribed codeine for severe pain following a dental procedure. Shortly after taking a standard dose, she becomes unarousable and experiences severe respiratory depression, requiring emergency administration of naloxone. Genetic testing reveals that she has a gene duplication (2xn) associated with ultra-rapid metabolism of the drug into morphine. Which of the following genes is overactive in this patient?",
+                options: {
+                    A: "CYP2C19",
+                    B: "CYP2C9",
+                    C: "CYP2D6",
+                    D: "HLA-B*5801",
+                    E: "VKORC1"
+                },
+                correctAnswer: "C",
+                rationale: "Codeine is a prodrug that is metabolized into active morphine by the CYP2D6 enzyme. Ultra-rapid metabolizers (who have gene duplications/multi-copies of CYP2D6) convert codeine to morphine too quickly, leading to a high risk of respiratory depression and death even at standard doses.",
+                source: "Pharmacogenomics PDF, Slides 24, 38: 'Codeine | CYP2D6 | Yes | CYP2D6 ultrametabolizers have a high risk of respiratory depression and death... 2xn (duplication or multi-copies) -> Ultra-rapid metabolizers'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    if (btnText.includes("Pathology of the Liver")) btnText = "Liver Pathology";
+                    if (btnText.includes("Biliary and Pancreas Pathology")) btnText = "Biliary/Pancreas Pathology";
+                    if (btnText.includes("Diagnosis and Management of Pancreatic Disorders")) btnText = "Pancreatic Disorders";
+                    if (btnText.includes("Pharmacogenomics")) btnText = "Pharmacogenomics";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
